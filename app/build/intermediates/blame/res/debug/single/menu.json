@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\Daniel\\AndroidStudioProjects\\ProyectoF\\app\\build\\intermediates\\res\\merged\\debug\\menu\\menu_configuracion.xml",
+        "source": "C:\\Users\\Daniel\\AndroidStudioProjects\\ProyectoF\\app\\src\\main\\res\\menu\\menu_configuracion.xml"
+    },
+    {
+        "merged": "C:\\Users\\Daniel\\AndroidStudioProjects\\ProyectoF\\app\\build\\intermediates\\res\\merged\\debug\\menu\\menu_contacto.xml",
+        "source": "C:\\Users\\Daniel\\AndroidStudioProjects\\ProyectoF\\app\\src\\main\\res\\menu\\menu_contacto.xml"
+    }
+]

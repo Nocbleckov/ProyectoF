@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20sp"
+    tools:context="com.baytag.daniel.proyectof.MainActivity"
+    android:weightSum="5">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/titulo_login"
+        android:textSize="30sp"
+        android:paddingBottom="10sp"
+        android:layout_weight="0"/>
+
+    <ImageView
+        android:id="@+id/imVw_ImgUsu_ActMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:padding="50sp"
+        android:layout_margin="20sp"
+        android:layout_weight="5"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_NomUsu_ActMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/nom_usu"
+        android:inputType="textEmailAddress"
+        app:met_floatingLabel="highlight"
+        android:layout_weight="2"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_Pass_ActMain"
+        android:hint="@string/pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        app:met_floatingLabel="highlight"
+        android:layout_weight="2"
+        />
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/btn_Ing_ActMain"
+        android:text="@string/ingresar"
+        android:textColor="@color/fbutton_color_clouds"
+        app:buttonColor="@color/fbutton_color_wet_asphalt"
+        android:layout_marginTop="40sp"
+        android:layout_marginLeft="60sp"
+        android:layout_marginRight="60sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:shadowEnabled="true"
+        android:layout_weight="1"
+        android:drawableLeft="@android:drawable/ic_lock_lock"
+        android:paddingLeft="20sp"
+        />
+
+</LinearLayout>

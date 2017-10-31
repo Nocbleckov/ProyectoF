@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">ProyectoF</string>
+    <string name="titulo_login">Tìtulo</string>
+    <string name="nom_usu">Nombre de Usuario</string>
+    <string name="pass">contraseña</string>
+    <string name="ingresar">ingresar</string>
+    <string name="aceptar">aceptar</string>
+    <string name="titulo_contactos">Contactos</string>
+    <string name="nombre_contacto">Nombre: </string>
+    <string name="ciudad_contacto">Ciudad: </string>
+    <string name="telefono_contacto">Teléfono: </string>
+    <string name="email_contacto">Email: </string>
+    <string name="buscar">Buscar</string>
+    <string name="insertar">Insertar</string>
+    <string name="llamar">Llamar</string>
+    <string name="escribir_email">Escribir Email</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="preferencias">Preferencias</string>
+    <string name="salir">Salir</string>
+    <string name="webservices">Url WebServices</string>
+    <string name="region">Region</string>
+    <string name="email_usuario">Email de usuario</string>
+    <string name="telefono_usuario">Teléfono de usuario</string>
+    <string name="africa">Africa</string>
+    <string name="america">America</string>
+    <string name="asia">Asia</string>
+    <string name="europa">Europa</string>
+    <string name="oceania">Oceania</string>
+</resources>

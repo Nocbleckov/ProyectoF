@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|top"
+    android:orientation="vertical"
+    tools:context="com.baytag.daniel.proyectof.PreferenciasActivity">
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/preferencias"
+        android:textSize="34sp" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_urlWS_preferencias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5sp"
+        android:layout_marginTop="20sp"
+        android:hint="@string/webservices"
+        app:met_floatingLabel="highlight" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:elevation="10sp"
+        android:layout_marginLeft="10sp"
+        >
+
+        <TextView
+            android:layout_marginTop="5sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/region"
+            android:textSize="24sp" />
+
+        <RadioButton
+            android:id="@+id/rdo_africa_preferencias"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/africa"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rdo_america_preferencias"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/america"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rdo_asia_preferencias"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/asia"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rdo_europa_preferencias"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/europa"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rdo_oceania_preferencias"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/oceania"
+            android:textSize="20sp" />
+    </RadioGroup>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_emailUsu_preferencias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5sp"
+        android:layout_marginTop="20sp"
+        android:hint="@string/email_usuario"
+        app:met_floatingLabel="highlight" />
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_telefonoUsu_preferencias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5sp"
+        android:layout_marginTop="20sp"
+        android:hint="@string/telefono_usuario"
+        app:met_floatingLabel="highlight" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+        <ImageButton
+            android:id="@+id/imgBtn_guardar_preferencias"
+            android:src="@android:drawable/ic_menu_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="10sp">
+
+        <TextView
+            android:id="@+id/txVw_NombreCon_adpCon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2sp"
+            android:text="@string/nombre_contacto"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/txVw_NomComCon_adpCon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2sp"
+            android:layout_marginLeft="10sp"
+            android:layout_toRightOf="@+id/txVw_NombreCon_adpCon"
+            android:text="NombreCompletoContacto"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/txVw_CdCon_adpCon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txVw_NombreCon_adpCon"
+            android:layout_marginTop="3sp"
+            android:text="@string/ciudad_contacto"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/txVw_NomCdCon_adpCon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/txVw_NomComCon_adpCon"
+            android:layout_below="@+id/txVw_NomComCon_adpCon"
+            android:layout_marginTop="3sp"
+            android:layout_toRightOf="@+id/txVw_CdCon_adpCon"
+            android:text="NombreCiudad"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:id="@+id/linLay_TelEm_adpCon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txVw_CdCon_adpCon"
+            android:layout_marginTop="8sp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/txVw_TelComCon_adpCon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="TelefonoCompletoContacto"
+                android:paddingRight="5sp"
+                android:textSize="12sp"/>
+
+
+
+            <TextView
+                android:id="@+id/txVw_EmComCon_adpCon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="CorreoCompletoContato"
+                android:paddingLeft="5sp"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="4"
+        android:padding="8sp"
+        android:src="@mipmap/ic_launcher_round" />
+
+</LinearLayout>
