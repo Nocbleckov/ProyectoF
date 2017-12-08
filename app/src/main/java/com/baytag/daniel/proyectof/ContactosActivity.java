@@ -1,9 +1,12 @@
 package com.baytag.daniel.proyectof;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,8 +27,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.baytag.daniel.proyectof.adaptadores.ContactosAdapter;
+import com.baytag.daniel.proyectof.apoyo.AppDbHelper;
 import com.baytag.daniel.proyectof.apoyo.Conexion;
+import com.baytag.daniel.proyectof.apoyo.PreferenciasManager;
 import com.baytag.daniel.proyectof.apoyo.Utilidades;
+import com.baytag.daniel.proyectof.contracts.AppContract;
 import com.baytag.daniel.proyectof.objetos.Contacto;
 import com.baytag.daniel.proyectof.objetos.Usuario;
 
@@ -44,11 +50,16 @@ public class ContactosActivity extends AppCompatActivity {
     ImageButton btnMenu;
     Usuario usuario;
     ContactosAdapter adaptador;
-    Contacto actual;
     Toolbar cstToolbar;
+    Contacto actual;
+    PreferenciasManager prefManager;
+    AppDbHelper appDbHelper;
+    SQLiteDatabase db;
 
-    private final int PERMISSIONS_REQUEST_CALL_PHONE = 0;
-    private final int PREFERENCIAS_REQUEST = 1;
+    public static final int PERMISSIONS_REQUEST_CALL_PHONE = 0;
+    public static final int PREFERENCIAS_REQUEST = 1;
+    public static final int REQUEST_EDITAR_CONTACTO = 2;
+    public static final int REQUEST_NUEVO_CONTACTO = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +67,20 @@ public class ContactosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contactos);
 
 
-        usuario = (Usuario) getIntent().getExtras().get("usuario");
+        usuario = (Usuario) getIntent().getExtras().get(Usuario.KEY);
+        prefManager = new PreferenciasManager(getBaseContext());
 
         rcVwContactos = (RecyclerView) findViewById(R.id.rcVw_rcVwCon_contactos);
         btnInsertar = (FButton) findViewById(R.id.btn_insetar_contactos);
         btnBuscar = (FButton) findViewById(R.id.btn_buscar_contactos);
+
+        btnInsertar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nuevoContacto(null);
+            }
+        });
+
         //btnMenu = (ImageButton) findViewById(R.id.btn_btnMenu_contactos);
 
         //registerForContextMenu(btnMenu);
@@ -110,8 +130,8 @@ public class ContactosActivity extends AppCompatActivity {
                 }
             });
         }
-        new onBackRcVw(this).execute(usuario);
-
+        //new onBackRcVw(this).execute(usuario);
+        new OnBackRcVwInternal(this).execute(usuario);
     }
 
 
@@ -134,20 +154,23 @@ public class ContactosActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        actual = adaptador.getItemSelected();
+        Contacto actual = adaptador.getItemSelected();
+        this.actual = actual;
 
         Toast.makeText(getBaseContext(), actual.getNomCon() + " : " + item.getTitle(), Toast.LENGTH_SHORT).show();
 
         switch (item.getTitle().toString()) {
             case "Llamar":
-                permisosLlamada();
+                permisosLlamada(actual);
                 break;
             case "Escribir Email":
-                enviarEmail();
+                enviarEmail(actual);
                 break;
             case "Editar":
+                editarContacto(actual);
                 break;
             case "Eliminar":
+                eliminarContacto(actual);
                 break;
             default:
                 Log.wtf("defult", "algo muy defualt");
@@ -158,22 +181,27 @@ public class ContactosActivity extends AppCompatActivity {
 
     }
 
-    private void permisosLlamada() {
+    private void permisosLlamada(Contacto actual) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                     != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
-                    Toast.makeText(getBaseContext(),
+                    /*Toast.makeText(getBaseContext(),
                             "Necesita dar permiso a la aplicación desde el menu de configuracíones",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();*/
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            PERMISSIONS_REQUEST_CALL_PHONE);
                 } else {
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.CALL_PHONE},
                             PERMISSIONS_REQUEST_CALL_PHONE);
                 }
             } else {
-                llamarContacto();
+                llamarContacto(actual);
             }
+        }else{
+            llamarContacto(actual);
         }
     }
 
@@ -188,6 +216,22 @@ public class ContactosActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Los cambios no fueron guardados", Toast.LENGTH_LONG).show();
                 }
                 return;
+            case REQUEST_EDITAR_CONTACTO:
+                if (resultCode == Activity.RESULT_OK) {
+                    //new onBackRcVw(this).execute(usuario);
+                    new OnBackRcVwInternal(this).execute(usuario);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(getBaseContext(), "No se realizo ningun cambio", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_NUEVO_CONTACTO:
+                if (resultCode == Activity.RESULT_OK) {
+                    //new onBackRcVw(this).execute(usuario);
+                    new OnBackRcVwInternal(this).execute(usuario);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(getBaseContext(), "No se realizo ningun cambio", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -198,7 +242,7 @@ public class ContactosActivity extends AppCompatActivity {
             case PERMISSIONS_REQUEST_CALL_PHONE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    llamarContacto();
+                    llamarContacto(this.actual);
                 } else {
                     Toast.makeText(getBaseContext(), "No se permitio la salida de llamadas", Toast.LENGTH_SHORT).show();
                 }
@@ -206,15 +250,14 @@ public class ContactosActivity extends AppCompatActivity {
         }
     }
 
-    private void llamarContacto() {
+    @SuppressLint("MissingPermission")
+    private void llamarContacto(Contacto actual) {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + actual.getTelCon()));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
+        startActivity(intent);
     }
 
-    private void enviarEmail() {
+    private void enviarEmail(Contacto actual) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + actual.getCorreoCon()));
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -222,10 +265,98 @@ public class ContactosActivity extends AppCompatActivity {
         }
     }
 
-    private class onBackRcVw extends AsyncTask<Usuario, Boolean, ArrayList<Contacto>> {
+    private void editarContacto(Contacto actual) {
+        Intent i = new Intent(ContactosActivity.this, InfoContactoActivity.class);
+        i.putExtra(Contacto.KEY, actual);
+        i.putExtra(Usuario.KEY, usuario);
+        i.putExtra("requestCode", REQUEST_EDITAR_CONTACTO);
+        startActivityForResult(i, REQUEST_EDITAR_CONTACTO);
+    }
+
+    private void nuevoContacto(Contacto contacto) {
+        Intent i = new Intent(ContactosActivity.this, InfoContactoActivity.class);
+        i.putExtra(Contacto.KEY, contacto);
+        i.putExtra(Usuario.KEY, usuario);
+        i.putExtra("requestCode", REQUEST_NUEVO_CONTACTO);
+        startActivityForResult(i, REQUEST_NUEVO_CONTACTO);
+    }
+
+    private void eliminarContacto(Contacto contacto) {
+        appDbHelper = new AppDbHelper(getBaseContext());
+        db = appDbHelper.getReadableDatabase();
+        String selection = AppContract.ContactoEntity.COLUMN_NAME_TEL_CON + " = ?";
+        String[] selectionArgs = {contacto.getTelCon()};
+        db.delete(AppContract.ContactoEntity.TABLE_NAME, selection, selectionArgs);
+        new OnBackRcVwInternal(this).execute(usuario);
+    }
+
+    private class OnBackRcVwInternal extends AsyncTask<Usuario, Boolean, ArrayList<Contacto>> {
+
+
+        String[] projection = {
+                AppContract.ContactoEntity.COLUMN_NAME_NOM_CON,
+                AppContract.ContactoEntity.COLUMN_NAME_P_APELLIDO,
+                AppContract.ContactoEntity.COLUMN_NAME_S_APELLIDO,
+                AppContract.ContactoEntity.COLUMN_NAME_TEL_CON,
+                AppContract.ContactoEntity.COLUMN_NAME_CIUDAD_CON,
+                AppContract.ContactoEntity.COLUMN_NAME_CORREO_CON
+        };
+
         Activity activity;
 
-        public onBackRcVw(Activity activity) {
+        public OnBackRcVwInternal(Activity activity) {
+            this.activity = activity;
+            appDbHelper = new AppDbHelper(getBaseContext());
+            db = appDbHelper.getReadableDatabase();
+        }
+
+        @Override
+        protected ArrayList<Contacto> doInBackground(Usuario... usuarios) {
+
+            ArrayList<Contacto> contactos = new ArrayList<>();
+
+            try {
+                Usuario usu = usuarios[0];
+                String selection = AppContract.ContactoEntity.COLUMN_NAME_ID_USUARIO + " = ?";
+                String[] selectionArgs = {String.valueOf(usu.getId())};
+                //String sortOrder = AppContract.ContactoEntity._ID + " ASC";
+
+                Cursor cursor = db.query(
+                        AppContract.ContactoEntity.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null
+                );
+
+                while (cursor.moveToNext()) {
+                    Contacto temp = new Contacto(cursor);
+                    contactos.add(temp);
+                }
+                cursor.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return contactos;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Contacto> contactos) {
+            super.onPostExecute(contactos);
+            if (contactos != null) {
+                adaptador = new ContactosAdapter(contactos);
+                rcVwContactos.setAdapter(adaptador);
+            }
+        }
+    }
+
+    private class onBackRcVwServer extends AsyncTask<Usuario, Boolean, ArrayList<Contacto>> {
+        Activity activity;
+
+        public onBackRcVwServer(Activity activity) {
             this.activity = activity;
         }
 
@@ -241,7 +372,11 @@ public class ContactosActivity extends AppCompatActivity {
 
             try {
 
-                Conexion con = new Conexion("http://192.168.100.5/WSPF/Peticiones.php");
+                Conexion con = new Conexion(
+                        prefManager.leerPreferencias(
+                                PreferenciasManager.URL_WEBSERVICES
+                                , "http://192.168.100.5/WSPF/Peticiones.php"
+                        ));
                 con.setParametros(parametros);
                 con.executar(Conexion.metodoPeticion.POST);
                 String respuesta = con.getRespuesta();

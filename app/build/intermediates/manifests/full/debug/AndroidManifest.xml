@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="15"
         android:targetSdkVersion="25" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,15 +22,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.baytag.daniel.proyectof.MainActivity" >
+        <activity
+            android:name="com.baytag.daniel.proyectof.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.baytag.daniel.proyectof.ContactosActivity" />
-        <activity android:name="com.baytag.daniel.proyectof.PreferenciasActivity" />
+        <activity
+            android:name="com.baytag.daniel.proyectof.ContactosActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.baytag.daniel.proyectof.PreferenciasActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.baytag.daniel.proyectof.InfoContactoActivity"
+            android:exported="true" />
+        <activity android:name="com.baytag.daniel.proyectof.NuevoUsuarioActivity" />
     </application>
 
 </manifest>

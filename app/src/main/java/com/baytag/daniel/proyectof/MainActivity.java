@@ -1,6 +1,8 @@
 package com.baytag.daniel.proyectof;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +11,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.baytag.daniel.proyectof.apoyo.AppDbHelper;
 import com.baytag.daniel.proyectof.apoyo.Conexion;
+import com.baytag.daniel.proyectof.apoyo.PreferenciasManager;
+import com.baytag.daniel.proyectof.contracts.AppContract;
 import com.baytag.daniel.proyectof.objetos.Usuario;
 
 import java.io.Serializable;
@@ -19,11 +24,14 @@ import info.hoang8f.widget.FButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int REQUEST_NUEVO_USUARIO = 1;
+
     ImageView imgAcceso;
     EditText edTxNomUsu, edTxPass;
-    FButton btnIngresar;
-
+    FButton btnIngresar, btnNvUsu;
+    PreferenciasManager prefManager;
     String nomUsu, pass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +42,12 @@ public class MainActivity extends AppCompatActivity {
         edTxPass = (EditText) findViewById(R.id.edTx_Pass_ActMain);
         imgAcceso = (ImageView) findViewById(R.id.imVw_ImgUsu_ActMain);
         btnIngresar = (FButton) findViewById(R.id.btn_Ing_ActMain);
+        btnNvUsu = (FButton) findViewById(R.id.btn_NvoUsu_ActMain);
+
+        prefManager = new PreferenciasManager(getBaseContext());
 
         btnIngresar.setOnClickListener(ingresar());
+        btnNvUsu.setOnClickListener(nvUsu());
 
     }
 
@@ -47,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 pass = edTxPass.getText().toString();
 
                 if (!nomUsu.equalsIgnoreCase("") || !pass.equalsIgnoreCase("")) {
-                    new onBackLogin(btnIngresar).execute(nomUsu, pass);
+                    //new onBackLoginServer(btnIngresar).execute(nomUsu, pass);
+                    new onBackLoginInternal(btnIngresar).execute(nomUsu, pass);
+
                 } else {
                     Toast.makeText(getBaseContext(), "Los campos de usuario y contraseña no pueden estar vacíos", Toast.LENGTH_SHORT).show();
                 }
@@ -55,11 +69,91 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private class onBackLogin extends AsyncTask<String, Boolean, Usuario> {
+    View.OnClickListener nvUsu() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), NuevoUsuarioActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                startActivityForResult(i, REQUEST_NUEVO_USUARIO);
+            }
+        };
+    }
+
+
+    private class onBackLoginInternal extends AsyncTask<String, Boolean, Usuario> {
+        FButton btnIngreso;
+        AppDbHelper appDbHelper;
+        SQLiteDatabase db;
+        Usuario usuario;
+
+        String[] projection = {
+                AppContract.UsuarioEntity._ID,
+                AppContract.UsuarioEntity.COLUMN_NAME_NICK,
+                AppContract.UsuarioEntity.COLUMN_NAME_TELEFONO,
+                AppContract.UsuarioEntity.COLUMN_NAME_EMAIL,
+                AppContract.UsuarioEntity.COLUMN_NAME_NOMBRE
+        };
+
+        public onBackLoginInternal(FButton btnIngreso) {
+            this.btnIngreso = btnIngreso;
+            appDbHelper = new AppDbHelper(getBaseContext());
+            db = appDbHelper.getReadableDatabase();
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            btnIngreso.setEnabled(false);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Usuario doInBackground(String... params) {
+            try {
+                String selection = AppContract.UsuarioEntity.COLUMN_NAME_NICK + "= ?"
+                        + "AND " +
+                        AppContract.UsuarioEntity.COLUMN_NAME_PASS + "= ?";
+                String[] selectionArgs = {params[0], params[1]};
+                Cursor cursor = db.query(
+                        AppContract.UsuarioEntity.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                while (cursor.moveToNext()) {
+                    usuario = new Usuario(cursor);
+                }
+                cursor.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return usuario;
+        }
+
+        @Override
+        protected void onPostExecute(Usuario usuario) {
+            super.onPostExecute(usuario);
+            btnIngreso.setEnabled(true);
+            try {
+                if (usuario.existe()) {
+                    Intent i = new Intent(MainActivity.this, ContactosActivity.class);
+                    i.putExtra(Usuario.KEY, (Serializable) usuario);
+                    startActivity(i);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class onBackLoginServer extends AsyncTask<String, Boolean, Usuario> {
 
         FButton btnIngreso;
 
-        public onBackLogin(FButton btnIngreso) {
+        public onBackLoginServer(FButton btnIngreso) {
             this.btnIngreso = btnIngreso;
         }
 
@@ -81,7 +175,10 @@ public class MainActivity extends AppCompatActivity {
             parametros.put("pass", pass);
 
             try {
-                Conexion con = new Conexion("http://192.168.100.5/WSPF/Peticiones.php");
+                Conexion con =
+                        new Conexion(prefManager.leerPreferencias(
+                                PreferenciasManager.URL_WEBSERVICES
+                                , "http://192.168.100.5/WSPF/Peticiones.php"));
                 con.setParametros(parametros);
                 con.executar(Conexion.metodoPeticion.POST);
                 String respuesta = con.getRespuesta();
@@ -101,10 +198,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 if (usuario.existe()) {
                     Intent i = new Intent(MainActivity.this, ContactosActivity.class);
-                    i.putExtra("usuario", (Serializable) usuario);
+                    i.putExtra(Usuario.KEY, (Serializable) usuario);
                     startActivity(i);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

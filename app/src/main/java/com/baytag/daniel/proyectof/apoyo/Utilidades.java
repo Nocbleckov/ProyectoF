@@ -3,6 +3,7 @@ package com.baytag.daniel.proyectof.apoyo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -12,14 +13,31 @@ import java.util.Iterator;
 
 public class Utilidades {
 
+    public static ArrayList<String> stringToCities(String data) {
+        ArrayList<String> cities = new ArrayList<>();
+        try {
+            if (!data.equalsIgnoreCase("")) {
+                JSONArray objectArray = new JSONArray(data);
+                for (int i = 0; i < objectArray.length(); i++) {
+                    JSONObject object = objectArray.getJSONObject(i);
+                    cities.add((String) object.get("name"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return cities;
+    }
+
     public static HashMap<String, HashMap<String, String>> datosJson(String data) {
 
         HashMap<String, HashMap<String, String>> datos = new HashMap<>();
         JSONObject object = null;
-
         String keyPasada = "";
-        try {
 
+        try {
             if (!data.equalsIgnoreCase("")) {
 
                 object = new JSONObject(data);
@@ -49,9 +67,12 @@ public class Utilidades {
                             keyPasada = key;
                         } else {
                             key = key + i;
+                            keyPasada = key;
                         }
 
+
                         datos.put(key, jsonObject);
+                        jsonObject = null;
                     }
                 }
             } else {
@@ -60,7 +81,6 @@ public class Utilidades {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return datos;
     }
 

@@ -90,23 +90,23 @@ public class PreferenciasActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void iniRdoGroup() {
-        String actual = prefManager.leerPreferencias(PreferenciasManager.REGION, "america");
+        String actual = prefManager.leerPreferencias(PreferenciasManager.REGION, "americas");
         switch (actual) {
             case "africa":
                 rdoAfrica.setChecked(true);
                 region = "africa";
                 break;
-            case "america":
+            case "americas":
                 rdoAmerica.setChecked(true);
-                region = "america";
+                region = "americas";
                 break;
             case "asia":
                 rdoAsia.setChecked(true);
                 region = "asia";
                 break;
-            case "europa":
+            case "europe":
                 rdoEuropa.setChecked(true);
-                region = "europa";
+                region = "europe";
                 break;
             case "oceania":
                 rdoOceania.setChecked(true);
@@ -127,7 +127,7 @@ public class PreferenciasActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.rdo_america_preferencias:
                 if (checked) {
-                    region = "america";
+                    region = "americas";
                 }
                 break;
             case R.id.rdo_asia_preferencias:
@@ -137,7 +137,7 @@ public class PreferenciasActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.rdo_europa_preferencias:
                 if (checked) {
-                    region = "europa";
+                    region = "europe";
                 }
                 break;
             case R.id.rdo_oceania_preferencias:

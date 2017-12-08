@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20sp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.baytag.daniel.proyectof.InfoContactoActivity">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_nomCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/nombre_contacto"
+        android:inputType="textPersonName"
+        app:met_floatingLabel="highlight" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_pApellidoCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/p_apellido_contacto"
+        android:inputType="textPersonName"
+        app:met_floatingLabel="highlight" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_sApellidoCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/s_apellido_contacto"
+        android:inputType="textPersonName"
+        app:met_floatingLabel="highlight" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/sp_ciudadCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="35sp"
+        android:layout_marginTop="8sp"
+        android:layout_marginBottom="8sp"
+        >
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_telefonoCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/telefono_contacto"
+        android:inputType="number"
+        app:met_floatingLabel="highlight" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edTx_emailCon_infoContacto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email_contacto"
+        android:inputType="textEmailAddress"
+        app:met_floatingLabel="highlight" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btn_cambiarCont_infoContacto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60sp"
+            android:layout_marginRight="60sp"
+            android:layout_marginTop="40sp"
+            android:drawableLeft="@android:drawable/ic_menu_save"
+            android:paddingLeft="20sp"
+            android:text="default"
+            android:textColor="@color/fbutton_color_clouds"
+            app:buttonColor="@color/fbutton_color_midnight_blue"
+            app:shadowEnabled="true" />
+    </LinearLayout>
+
+</LinearLayout>

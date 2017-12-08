@@ -33,4 +33,7 @@ public class PreferenciasManager {
         return sharedPreferences.getString(stringKey, def);
     }
 
+    public Context getContext() {
+        return context;
+    }
 }

@@ -43,7 +43,7 @@ public class Conexion {
     /*
     * devuelve el mensaje recibida despues de Realizar la conexion
     * */
-    public String getMensaje(){
+    public String getMensaje() {
         return mensaje;
     }
 
@@ -53,11 +53,11 @@ public class Conexion {
     * Error en servidro == 500
     *
     * */
-    public int getCodigoRespuesta(){
+    public int getCodigoRespuesta() {
         return codigoRespuesta;
     }
 
-    public String getRespuesta(){
+    public String getRespuesta() {
         return respuesta;
     }
 
@@ -67,18 +67,18 @@ public class Conexion {
     *
     * */
 
-    public void setParametros(Map<String,String> parametros){
+    public void setParametros(Map<String, String> parametros) {
 
         StringBuilder parametrosB = new StringBuilder();
         final char FINPARAMETRO = '&';
         final char IGUAL = '=';
 
-        if(parametros != null) {
+        if (parametros != null) {
 
             boolean primerParametro = true;
-            for (String NombreParametro : parametros.keySet() ) {
+            for (String NombreParametro : parametros.keySet()) {
 
-                if(!primerParametro){
+                if (!primerParametro) {
                     parametrosB.append(FINPARAMETRO);
                 }
                 parametrosB.append(NombreParametro).append(IGUAL).append(parametros.get(NombreParametro));
@@ -90,18 +90,18 @@ public class Conexion {
         this.parametros = parametrosB.toString();
     }
 
-    public String getParametros(){
+    public String getParametros() {
         return parametros;
     }
 
-    public enum metodoPeticion{
-        GET,POST
+    public enum metodoPeticion {
+        GET, POST
     }
 
     public Conexion(String urlStg) throws Exception {
 
         this.url = new URL(urlStg);
-        conexion = (HttpURLConnection)url.openConnection();
+        conexion = (HttpURLConnection) url.openConnection();
 
     }
 
@@ -111,13 +111,13 @@ public class Conexion {
 
     public void executar(metodoPeticion metodo) throws Exception {
 
-        switch (metodo){
+        switch (metodo) {
 
             case GET:
 
                 if (parametros != null) {
-                    url = new URL( url.toString()+"?"+parametros);
-                    Log.wtf("URL",url.toString());
+                    url = new URL(url.toString() + "?" + parametros);
+                    Log.wtf("URL", url.toString());
                     conexion = (HttpURLConnection) url.openConnection();
                 }
 
@@ -132,6 +132,7 @@ public class Conexion {
                 conexion.setDoInput(true);
                 conexion.setInstanceFollowRedirects(false);
 
+
                 conexion.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conexion.setRequestProperty("charset", "utf-8");
                 conexion.setRequestProperty("Content-Length", "" + Integer.toString(parametros.getBytes().length));
@@ -139,9 +140,10 @@ public class Conexion {
                 conexion.setUseCaches(false);
 
                 DataOutputStream wr = new DataOutputStream(conexion.getOutputStream());
-                wr.writeBytes(parametros);
+                wr.write(parametros.getBytes("UTF-8"));
                 wr.flush();
                 wr.close();
+
 
                 break;
         }
@@ -152,7 +154,6 @@ public class Conexion {
         this.mensaje = conexion.getResponseMessage();
 
         InputStream in = conexion.getInputStream();
-
         this.respuesta = convertStreamToString(in);
 
         conexion.disconnect();
